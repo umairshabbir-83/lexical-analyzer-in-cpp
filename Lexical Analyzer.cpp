@@ -4,76 +4,22 @@
 
 using namespace std;
 
-bool isPunctuator(char Character)
-{
-    if (Character == ' ' || Character == '+' || Character == '-' || Character == '*' ||
-        Character == '/' || Character == ',' || Character == ';' || Character == '>' ||
-        Character == '<' || Character == '=' || Character == '(' || Character == ')' ||
-        Character == '[' || Character == ']' || Character == '{' || Character == '}' ||
-        Character == '&' || Character == '|')
-    {
-        return true;
-    }
-    return false;
-}
-
-bool isValidIdentifier(char* CharacterStream)
-{
-    if (CharacterStream[0] == '0' || CharacterStream[0] == '1' || CharacterStream[0] == '2' ||
-        CharacterStream[0] == '3' || CharacterStream[0] == '4' || CharacterStream[0] == '5' ||
-        CharacterStream[0] == '6' || CharacterStream[0] == '7' || CharacterStream[0] == '8' ||
-        CharacterStream[0] == '9' || isPunctuator(CharacterStream[0]) == true)
-    {
-        return false;
-    }
-
-    int StreamLength = strlen(CharacterStream);
-
-    if (StreamLength == 1)
-    {
-        return true;
-    }
-    else
-    {
-        for (int i = 1; i < StreamLength; i++)
-        {
-            if (isPunctuator(CharacterStream[i]) == true)
-            {
-                return false;
-            }
-        }
-    }
-    return true;
-}
-
-bool isOperator(char Character)
-{
-    if (Character == '+' || Character == '-' || Character == '*' ||
-        Character == '/' || Character == '>' || Character == '<' ||
-        Character == '=' || Character == '|' || Character == '&')
-    {
-        return true;
-    }
-    return false;
-}
-
 bool isKeyword(char* CharacterStream)
 {
-    if (!strcmp(CharacterStream, "cout") || !strcmp(CharacterStream, "cin")
+    if (!strcmp(CharacterStream, "cin") || !strcmp(CharacterStream, "cout")
         || !strcmp(CharacterStream, "if") || !strcmp(CharacterStream, "else")
-        || !strcmp(CharacterStream, "while") || !strcmp(CharacterStream, "do")
-        || !strcmp(CharacterStream, "break") || !strcmp(CharacterStream, "continue")
-        || !strcmp(CharacterStream, "int") || !strcmp(CharacterStream, "double")
-        || !strcmp(CharacterStream, "float") || !strcmp(CharacterStream, "return")
-        || !strcmp(CharacterStream, "char") || !strcmp(CharacterStream, "case")
-        || !strcmp(CharacterStream, "long") || !strcmp(CharacterStream, "short")
-        || !strcmp(CharacterStream, "typedef") || !strcmp(CharacterStream, "switch")
-        || !strcmp(CharacterStream, "unsigned") || !strcmp(CharacterStream, "void")
-        || !strcmp(CharacterStream, "static") || !strcmp(CharacterStream, "struct")
-        || !strcmp(CharacterStream, "sizeof") || !strcmp(CharacterStream, "long")
-        || !strcmp(CharacterStream, "volatile") || !strcmp(CharacterStream, "bool")
-        || !strcmp(CharacterStream, "enum") || !strcmp(CharacterStream, "const")
-        || !strcmp(CharacterStream, "union") || !strcmp(CharacterStream, "extern"))
+        || !strcmp(CharacterStream, "do") || !strcmp(CharacterStream, "while")
+        || !strcmp(CharacterStream, "continue") || !strcmp(CharacterStream, "break")
+        || !strcmp(CharacterStream, "int") || !strcmp(CharacterStream, "float")
+        || !strcmp(CharacterStream, "double") || !strcmp(CharacterStream, "char")
+        || !strcmp(CharacterStream, "short") || !strcmp(CharacterStream, "long")
+        || !strcmp(CharacterStream, "case") || !strcmp(CharacterStream, "switch")
+        || !strcmp(CharacterStream, "signed") || !strcmp(CharacterStream, "unsigned")
+        || !strcmp(CharacterStream, "bool") || !strcmp(CharacterStream, "struct")
+        || !strcmp(CharacterStream, "void") || !strcmp(CharacterStream, "static")
+        || !strcmp(CharacterStream, "sizeof") || !strcmp(CharacterStream, "enum")
+        || !strcmp(CharacterStream, "volatile") || !strcmp(CharacterStream, "const")
+        || !strcmp(CharacterStream, "printf") || !strcmp(CharacterStream, "return"))
     {
         return true;
     }
@@ -111,6 +57,49 @@ bool isNumber(char* CharacterStream)
     return true;
 }
 
+bool isOperator(char Character)
+{
+    if (Character == '+' || Character == '-' || Character == '*' ||
+        Character == '/' || Character == '<' || Character == '>' ||
+        Character == '=' || Character == '&' || Character == '|' ||
+        Character == ',' || Character == ';' || Character == ')' ||
+        Character == '(' || Character == '[' || Character == ']' ||
+        Character == '{' || Character == '}')
+    {
+        return true;
+    }
+    return false;
+}
+
+bool isValidIdentifier(char* CharacterStream)
+{
+    if (CharacterStream[0] == '0' || CharacterStream[0] == '1' || CharacterStream[0] == '2' ||
+        CharacterStream[0] == '3' || CharacterStream[0] == '4' || CharacterStream[0] == '5' ||
+        CharacterStream[0] == '6' || CharacterStream[0] == '7' || CharacterStream[0] == '8' ||
+        CharacterStream[0] == '9' || isOperator(CharacterStream[0]) == true)
+    {
+        return false;
+    }
+
+    int StreamLength = strlen(CharacterStream);
+
+    if (StreamLength == 1)
+    {
+        return true;
+    }
+    else
+    {
+        for (int i = 1; i < StreamLength; i++)
+        {
+            if (isOperator(CharacterStream[i]) == true)
+            {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
 char* subString(char* CharacterStream, int left, int right)
 {
     char* subStr = (char*)malloc(sizeof(char) * (right - left + 2));
@@ -123,7 +112,6 @@ char* subString(char* CharacterStream, int left, int right)
     return subStr;
 }
 
-
 void Tokenize(char* CharacterStream)
 {
     int left = 0, right = 0;
@@ -131,12 +119,12 @@ void Tokenize(char* CharacterStream)
 
     while (right <= StreamLength && left <= right)
     {
-        if (isPunctuator(CharacterStream[right]) == false)
+        if (isOperator(CharacterStream[right]) == false)
         {
             right++;
         }
 
-        if (isPunctuator(CharacterStream[right]) == true && left == right)
+        if (isOperator(CharacterStream[right]) == true && left == right)
         {
             if (isOperator(CharacterStream[right]) == true)
             {
@@ -145,7 +133,7 @@ void Tokenize(char* CharacterStream)
             right++;
             left = right;
         }
-        else if (isPunctuator(CharacterStream[right]) == true && left != right || (right == StreamLength && left != right))
+        else if (isOperator(CharacterStream[right]) == true && left != right || (right == StreamLength && left != right))
         {
             char* subStr = subString(CharacterStream, left, right - 1);
 
@@ -157,11 +145,11 @@ void Tokenize(char* CharacterStream)
             {
                 cout << subStr << "\t\tNumber\n";
             }
-            else if (isValidIdentifier(subStr) == true && isPunctuator(CharacterStream[right - 1]) == false)
+            else if (isValidIdentifier(subStr) == true && isOperator(CharacterStream[right - 1]) == false)
             {
                 cout << subStr << "\t\tIdentifier\n";
             }
-            else if (isValidIdentifier(subStr) == false && isPunctuator(CharacterStream[right - 1]) == false)
+            else if (isValidIdentifier(subStr) == false && isOperator(CharacterStream[right - 1]) == false)
             {
                 cout << subStr << "\t\tIdentifier not valid\n";
             }
@@ -171,10 +159,9 @@ void Tokenize(char* CharacterStream)
     return;
 }
 
-//MAIN BODY
 int main()
 {
-    char CharacterStream[128];
+    char* CharacterStream = new char[128];
 
     cout << string(32, '-') << endl;
     cout << "Lexeme\t\tToken" << endl;
@@ -201,5 +188,6 @@ int main()
     }
 
     CodeFile.close();
+    delete[] CharacterStream;
     return 0;
 }
